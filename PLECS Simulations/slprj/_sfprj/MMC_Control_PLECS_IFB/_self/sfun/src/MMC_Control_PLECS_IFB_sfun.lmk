@@ -1,0 +1,26 @@
+CC     = "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\bin\lcc64.exe"
+LD     = "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\bin\lcclnk64.exe"
+LIBCMD = "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\bin\lcclib64.exe"
+CFLAGS = -dll -noregistrylookup  -c -Zp8 -DLCC_WIN64 -DMATLAB_MEX_FILE -DMX_COMPAT_32 -nodeclspec 
+LDFLAGS = -s -dll -L"E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\lib64" -entry LibMain -map sfun.map 
+LIBFLAGS = 
+
+OBJECTS = \
+	"MMC_Control_PLECS_IFB_sfun.obj"\
+	"c2_MMC_Control_PLECS_IFB.obj"\
+	"MMC_Control_PLECS_IFB_sfun_registry.obj"\
+	"lccstub.obj"\
+
+INCLUDE_PATH= -I"E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\include64"  -I"E:\Program Files\MATLAB\R2016a\extern\include"  -I"E:\Program Files\MATLAB\R2016a\simulink\include"  -I"E:\Program Files\MATLAB\R2016a\simulink\include\sf_runtime"  -I"E:\Program Files\MATLAB\R2016a\stateflow\c\mex\include"  -I"E:\Program Files\MATLAB\R2016a\rtw\c\src"  -I"C:\Users\Francis Chen\Dropbox\Stanford\Research\Dally\multi-level-solar\multi-level-solar\matlab\PLECS Simulations\slprj\_sfprj\MMC_Control_PLECS_IFB\_self\sfun\src" 
+ 
+
+MMC_Control_PLECS_IFB_sfun.mexw64 : $(MAKEFILE) $(OBJECTS)
+	$(LD) $(LDFLAGS) -o MMC_Control_PLECS_IFB_sfun.mexw64 @MMC_Control_PLECS_IFB_sfun.lmko
+MMC_Control_PLECS_IFB_sfun.obj :	"MMC_Control_PLECS_IFB_sfun.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "MMC_Control_PLECS_IFB_sfun.c"
+c2_MMC_Control_PLECS_IFB.obj :	"c2_MMC_Control_PLECS_IFB.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "c2_MMC_Control_PLECS_IFB.c"
+MMC_Control_PLECS_IFB_sfun_registry.obj :	"MMC_Control_PLECS_IFB_sfun_registry.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "MMC_Control_PLECS_IFB_sfun_registry.c"
+lccstub.obj :	"E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\mex\lccstub.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\mex\lccstub.c"

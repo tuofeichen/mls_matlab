@@ -1,0 +1,3 @@
+LIBRARY MMC_Control_PLECS_V2_R2016a_sfun.mexw64
+EXPORTS
+mexFunction

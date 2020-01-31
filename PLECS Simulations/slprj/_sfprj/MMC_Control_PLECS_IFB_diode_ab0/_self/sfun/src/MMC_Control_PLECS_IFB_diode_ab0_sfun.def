@@ -1,0 +1,3 @@
+LIBRARY MMC_Control_PLECS_IFB_diode_ab0_sfun.mexw64
+EXPORTS
+mexFunction

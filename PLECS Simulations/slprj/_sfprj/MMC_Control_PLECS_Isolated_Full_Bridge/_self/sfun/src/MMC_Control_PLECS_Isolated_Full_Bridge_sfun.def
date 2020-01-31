@@ -1,0 +1,3 @@
+LIBRARY MMC_Control_PLECS_Isolated_Full_Bridge_sfun.mexw64
+EXPORTS
+mexFunction

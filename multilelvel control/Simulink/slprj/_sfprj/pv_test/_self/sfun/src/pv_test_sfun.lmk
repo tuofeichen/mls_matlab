@@ -1,0 +1,26 @@
+CC     = "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\bin\lcc64.exe"
+LD     = "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\bin\lcclnk64.exe"
+LIBCMD = "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\bin\lcclib64.exe"
+CFLAGS = -dll -noregistrylookup  -c -Zp8 -DLCC_WIN64 -DMATLAB_MEX_FILE -DMX_COMPAT_32 -nodeclspec 
+LDFLAGS = -s -dll -L"E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\lib64" -entry LibMain -map sfun.map 
+LIBFLAGS = 
+
+OBJECTS = \
+	"pv_test_sfun.obj"\
+	"c2_pv_test.obj"\
+	"pv_test_sfun_registry.obj"\
+	"lccstub.obj"\
+
+INCLUDE_PATH= -I"E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\include64"  -I"E:\Program Files\MATLAB\R2016a\extern\include"  -I"E:\Program Files\MATLAB\R2016a\simulink\include"  -I"E:\Program Files\MATLAB\R2016a\simulink\include\sf_runtime"  -I"E:\Program Files\MATLAB\R2016a\stateflow\c\mex\include"  -I"E:\Program Files\MATLAB\R2016a\rtw\c\src"  -I"C:\Users\Francis Chen\Dropbox\Stanford\Research\Dally\multi-level-solar\multi-level-solar\matlab\multilelvel control\Simulink\slprj\_sfprj\pv_test\_self\sfun\src" 
+ 
+
+pv_test_sfun.mexw64 : $(MAKEFILE) $(OBJECTS)
+	$(LD) $(LDFLAGS) -o pv_test_sfun.mexw64 @pv_test_sfun.lmko
+pv_test_sfun.obj :	"pv_test_sfun.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "pv_test_sfun.c"
+c2_pv_test.obj :	"c2_pv_test.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "c2_pv_test.c"
+pv_test_sfun_registry.obj :	"pv_test_sfun_registry.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "pv_test_sfun_registry.c"
+lccstub.obj :	"E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\mex\lccstub.c"
+	$(CC) $(CFLAGS) $(INCLUDE_PATH) "E:\Program Files\MATLAB\R2016a\sys\lcc64\lcc64\mex\lccstub.c"
