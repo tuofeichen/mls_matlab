@@ -145,8 +145,22 @@ plot(tstep,D5); hold on; plot(tstep,D6);
 ylabel('Duty Cycle / Voltage Split')
 
 phi = tstep; 
-save('Dnom','D1','D2','D3','D4','D5','D6');
-Dnom = {D1,D2,D3,D4,D5,D6};
+Dnom = [D1;D2;D3;D4;D5;D6];
+VoNom = Vin*Dnom;
+
+Dnom  = abs(Dnom(:,1:length(Dnom)/2)); 
+VoNom = abs(VoNom(:,1:length(VoNom)/2));  
+RoNom = [VoNom(1,:)./abs(Ig1);
+         VoNom(2,:)./abs(Ig1);
+         VoNom(3,:)./abs(Ig2);
+         VoNom(4,:)./abs(Ig2);
+         VoNom(5,:)./abs(Ig3);
+         VoNom(6,:)./abs(Ig3)];
+
+save('Dnom','RoNom','Dnom','VoNom');
+
+% save('Dnom','D1','D2','D3','D4','D5','D6');
+% Dnom = {D1,D2,D3,D4,D5,D6};
 
 end
 

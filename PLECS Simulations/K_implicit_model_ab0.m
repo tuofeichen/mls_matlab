@@ -23,10 +23,10 @@ num_point = 2*150;
 tstep = linspace(0,2*pi,num_point);
 
 % Some nominal values 
-Vpv  = 80; 
+Vpv  = 100; 
 Iin  = 10;
 Pin  = Vpv*Iin; 
-Vg_amp = 120; 
+Vg_amp = 160; 
 
 % ABC Frame current amplitude
 Ig_amp = Pin*2/Vg_amp; 

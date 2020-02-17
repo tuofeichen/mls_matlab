@@ -14,6 +14,7 @@ h(1) =  plot(t,(sin(w*t)).^2,'b');
 hold on;
 h(2) =  plot(t,(sin(w*t+2*pi/3)).^2,'r'); 
 h(3) =  plot(t,(sin(w*t-2*pi/3)).^2,'g'); 
+h(3).Color = [0 0.5  0];
 title('3-\phi Power Splitting');
 ylabel('Phase Power');
 legend('\phi_1','\phi_2','\phi_3');
@@ -65,7 +66,10 @@ h(4) = plot(t_phi2,s2_phi1,'r');
 % phase 3 related power
 t_phi3 = t_phi1 + 1/3*T;
 h(5) = plot(t_phi3,s1_phi1,'g--');
+h(5).Color =  [0 0.5  0];
 h(6) = plot(t_phi3,s2_phi1,'g:');
+h(6).Color = [0 0.5  0];
+
 % 
 % legend('(S1 \rightarrow \phi_1)','(S2 \rightarrow \phi_1)',...
 %     '(S3 \rightarrow \phi_2)','(S1 \rightarrow \phi_2)',...
