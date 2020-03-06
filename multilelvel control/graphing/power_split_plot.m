@@ -3,9 +3,11 @@ clear
 m_sample = 1000; 
 p_sample = 6*m_sample*4; 
 
+ha = tight_subplot(3,1,0.03,[.12 .12],[.1 .1]);
 
 figure; 
-ax1 =subplot(3,1,1);
+% ax1 =subplot(3,1,1);
+axes(ha(1)); 
 w = 2*pi*60; 
 T = 1/60;
 t = linspace(0,2*T,p_sample); 
@@ -17,11 +19,13 @@ h(3) =  plot(t,(sin(w*t-2*pi/3)).^2,'g');
 h(3).Color = [0 0.5  0];
 title('3-\phi Power Splitting');
 ylabel('Phase Power');
+set(gca,'XTick',[]);
 legend('\phi_1','\phi_2','\phi_3');
 my_plot_setting(h);
 
 
-ax2 =subplot(3,1,2); 
+% ax2 =subplot(3,1,2);
+axes(ha(2));
 % phase 1 related power 
 t_split_1 = 30;
 t_split_2 = 60;
@@ -74,16 +78,25 @@ h(6).Color = [0 0.5  0];
 % legend('(S1 \rightarrow \phi_1)','(S2 \rightarrow \phi_1)',...
 %     '(S3 \rightarrow \phi_2)','(S1 \rightarrow \phi_2)',...
 %    '(S2 \rightarrow \phi_3)','(S3 \rightarrow \phi_3)');
-ylabel('Inverter Power'); 
+ylabel('Inverter Power');
 my_plot_setting(h); 
-lbl  = {'S1 \rightarrow \phi_1','S3 \rightarrow \phi_1',...
-        'S2 \rightarrow \phi_2','S1 \rightarrow \phi_2',...
-        'S3 \rightarrow \phi_3','S2 \rightarrow \phi_3'};
-legendflex(h,lbl,'nrow',2); 
+set(gca,'XTick',[]);
+% lbl  = {'S1 \rightarrow \phi_1','S3 \rightarrow \phi_1',...
+%         'S2 \rightarrow \phi_2','S1 \rightarrow \phi_2',...
+%         'S3 \rightarrow \phi_3','S2 \rightarrow \phi_3'};
+
+lbl  = {'I_1','I_2',...
+    'I_4','I_3',...
+    'I_6','I_5'};
+% legend(lbl); 
+h = legendflex(h,lbl,'nrow',1,'anchor', [3 3], 'buffer', [-4 -3]); 
+set(h,'linewidth',2)
 ylim([-0.001,0.8]);
 
 % right chronical order 
-ax3 =subplot(3,1,3) ;
+% ax3 =subplot(3,1,3) ;
+
+axes(ha(3));
 
 s1_phi2 = interp1(t_phi2(1:5:end),s2_phi1(1:5:end),t_phi1);
 
@@ -93,12 +106,20 @@ h(2) = plot(t_phi1,s1_phi2,'r');
 
 hold on; 
 h(3) = plot(t_phi1,s1_phi1 + s1_phi2,'k'); 
-legend('S1 \rightarrow \phi_1','S1 \rightarrow \phi_2','S1 Total'); 
+% legend('S1 \rightarrow \phi_1','S1 \rightarrow \phi_2','S1 Total'); 
+legend('I_1','I_3','S_1'); 
 my_plot_setting(h); 
 ylim([-0.001,0.6]);
-linkaxes([ax1,ax2,ax3],'x')
+% linkaxes([ax1,ax2,ax3],'x')
+linkaxes(ha,'x')
 xlim([T/2,T]);
 xlabel('Time (s)'); 
 ylabel('String Power'); 
+
+x0 = 10; 
+y0 = 10; 
+width = 800; 
+height = 600; 
+set(gcf,'position',[x0,y0,width,height])
 
 % end

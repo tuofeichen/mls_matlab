@@ -18,13 +18,13 @@ Nout   = 5;    % Number of outputs (same as the number of states)
 
 %assume a nominal condition 
 Lout = 500e-6; 
-Cin  = 20e-6; 
-num_point = 2*150; 
+Cin  = 30e-6; 
+num_point = 2*120; 
 tstep = linspace(0,2*pi,num_point);
 
 % Some nominal values 
 Vpv  = 100; 
-Iin  = 10;
+Iin  = 20;
 Pin  = Vpv*Iin; 
 Vg_amp = 120; 
 
@@ -43,7 +43,7 @@ load Dnom.mat;
 
 % LQR Loss Matrix (Bryson's Rule to Normalize the Value)
 Vin_max = 1.1*Vpv;
-dV_max  = 0.01*Vpv; 
+dV_max  = 0.005*Vpv; 
 dI_max  = 0.01*Ig_amp;
 u_max   = 1; 
 

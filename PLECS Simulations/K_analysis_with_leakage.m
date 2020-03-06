@@ -18,16 +18,16 @@ Nin    = 6;    % Number of inputs
 Nout   = 5;    % Number of outputs (last output is not used)
 
 %assume a nominal condition 
-Lg  = 200e-6; 
+Lg  = 50e-6; 
 Rg = 0.0001;
 Cin   = 20e-6;
-Lleak = 1e-6;
-Cout  = 10e-6; 
+Lleak = 5e-6;
+Cout  = 20e-6; 
 fsw   = 100e3; 
 Tsw   = 1/fsw; 
 %fsw = 1; 
 
-num_point = 2*450; 
+num_point = 2*150; 
 tstep = linspace(0,2*pi,num_point);
 
 % Some nominal values 
@@ -43,8 +43,12 @@ Ig3 = (Ig_amp*(sin(tstep+2*pi/3)));
 
 getDOpenLoopLeakage(Vpv,Iin,Vg_amp,num_point/2);
 load Dnom.mat; 
+% RoNom = 9; 
+% RoNom = max(RoNom,1); 
 Dsub  = Dnom./RoNom *Lleak*fsw;
 Dsub(isnan(Dsub)) = 0; 
+
+
 D1 = Dsub(1,:); 
 D2 = Dsub(2,:); 
 D3 = Dsub(3,:); 
@@ -52,12 +56,11 @@ D4 = Dsub(4,:);
 D5 = Dsub(5,:); 
 D6 = Dsub(6,:); 
 
-
-
 % System matrix for the augmented state space
 Vi_id = [1 2 3];
 Ig_id = [4 5 6];
 Vo_id = 7:12; 
+invalid_index = []; 
 
 for ii = 1:length(D1)
 %% A matrix
@@ -112,12 +115,12 @@ B(Vi_id(2),4) = -VoNom(4,ii)*Tsw/(Lleak*Cin);
 B(Vi_id(2),5) = -VoNom(5,ii)*Tsw/(Lleak*Cin);
 B(Vi_id(3),6) = -VoNom(6,ii)*Tsw/(Lleak*Cin);
 
-B(Vo_id(1),1) = -Vpv*Tsw/(Lleak*Cin);
-B(Vo_id(2),2) = -Vpv*Tsw/(Lleak*Cin);
-B(Vo_id(3),3) = -Vpv*Tsw/(Lleak*Cin);
-B(Vo_id(4),4) = -Vpv*Tsw/(Lleak*Cin);
-B(Vo_id(5),5) = -Vpv*Tsw/(Lleak*Cin);
-B(Vo_id(6),6) = -Vpv*Tsw/(Lleak*Cin);
+B(Vo_id(1),1) = Vpv*Tsw/(Lleak*Cout);
+B(Vo_id(2),2) = Vpv*Tsw/(Lleak*Cout);
+B(Vo_id(3),3) = Vpv*Tsw/(Lleak*Cout);
+B(Vo_id(4),4) = Vpv*Tsw/(Lleak*Cout);
+B(Vo_id(5),5) = Vpv*Tsw/(Lleak*Cout);
+B(Vo_id(6),6) = Vpv*Tsw/(Lleak*Cout);
 
 
 %% C Matrix
@@ -131,16 +134,14 @@ Di = D;
 
 %% LQR Loss Matrix (Bryson's Rule to Normalize the Value)
 Vin_max = 0.01*Vpv; 
-Ig_max  = 0.05*10;
-u_max   = 1; 
+Ig_max  = 0.01*[10,10,10];%[Ig1(ii),Ig2(ii),Ig3(ii)];
 
-Qdiag  = [5e5*ones(1,3),5e6*ones(1,2),1/(Vin_max^2)*ones(1,3),1/(Ig_max^2)*ones(1,3)...
+Qdiag  = [5e6*ones(1,3),1e7*ones(1,2),1/(Vin_max^2)*ones(1,3),1./(Ig_max.^2)...
     1/(Vin_max^2)*ones(1,6)];
 
 Q = diag(Qdiag); 
-% Qpdiag = [1/(Vin_max^2)*ones(1,3),1/(Ig_max^2)*ones(1,3),1/(Vin_max^2)*ones(1,6),1/(Ig_max^2)*ones(1,6)];
-% Qp = diag(Qpdiag); 
-dD_max = 0.01*ones(1,Nin);%length(Dnom)); 
+
+dD_max = 0.001*ones(1,Nin);%length(Dnom)); 
 Rdiag = 1./(dD_max.^2);
 R = diag(Rdiag); 
 
@@ -166,6 +167,13 @@ try
 %     L = place(A',Csense',closedLoopPole)';
 catch
     warning('K invalid');  
+    if ii >1 
+        K = reshape(K_log(ii-1,:,:),Nin,Nstate+Nout);
+    else
+        K = zeros(Nin,Nout+Nstate); 
+    end
+    
+    invalid_index = [invalid_index,ii]; 
 end
 
 
@@ -180,13 +188,22 @@ if sum(K)~=0
     Gclx = C*feedback(Golx,Kp)+D; % *note that this need to rethink about the pole locations! 
     Gcl = feedback(-Gclx*Ki/s,ss(eye(Nout)));
     % pole(Gcl)
+    polesGcl =  sort(pole(Gcl));
+    minPole = polesGcl(1); 
     if sum(real(pole(Gcl))> 0)
         disp('Warning, unstable'); 
+    else
+%         diap('tada');
     end
 end
+% pole_log(ii) = minPole; 
 K_log(ii,:,:)  = K;%(:,1:(2*Nout+1)); 
-xnom_log(ii,:) = [Vpv,Vpv,Vpv,Ig1(ii),Ig2(ii),Ig3(ii),VoNom(:,ii)'];
+xnom_log(ii,:) = [Vpv,Vpv,Vpv,abs(Ig1(ii)),abs(Ig2(ii)),abs(Ig3(ii)),VoNom(:,ii)'];
 
+end
+
+if sum(K_log(1,:,:))==0
+    K_log(1,:,:) = K_log(2,:,:); 
 end
 
 K11 = K_log(:,1,1);
@@ -198,7 +215,7 @@ K15 = K_log(:,1,5);
 % phi = theta_log; %(tstep(1:length(K11)));
 phi = (tstep(1:length(K11)));
 figure; 
-subplot(2,1,1);
+subplot(3,1,1);
 plot(phi, [K11,K12,K13,K14,K15]);
 title('Integral Gain related to D1');
 % legend('V1->D1','V2->D1','V3->D1');
@@ -213,12 +230,16 @@ K15 = K_log(:,1,10);
 % K17 = K_log(:,1,Io_id(1)); 
 
 
-subplot(2,1,2);
+subplot(3,1,2);
 plot(phi, [K11,K12,K13,K14,K15]);
 title('Proportional Gain related to D1');
 % legend('V1->D1','V2->D1','V3->D1');
 legend('V1->D1','V2->D1','V3->D1','Ig1->D1','Ig2->D1');
 xlabel('Grid Angle (rad)')
+
+subplot(3,1,3); 
+Dlen = length(D1);
+plot(phi,[Ig1(1:Dlen)',Ig2(1:Dlen)',Ig3(1:Dlen)']); 
 
 phi = (tstep(1:length(K11)));
 save ('Knom_leak','K_log','xnom_log','phi','Dsub'); 

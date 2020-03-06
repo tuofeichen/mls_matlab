@@ -17,13 +17,13 @@ Nin    = 6;    % Number of inputs
 Nout   = 5;    % Number of outputs (same as the number of states)
 
 %assume a nominal condition 
-Lout = 500e-6; 
+Lout = 300e-6; 
 Cin  = 20e-6; 
 num_point = 2*150; 
 tstep = linspace(0,2*pi,num_point);
 
 % Some nominal values 
-Vpv  = 100; 
+Vpv  = 120; 
 Iin  = 10;
 Pin  = Vpv*Iin; 
 Vg_amp = 120; 
