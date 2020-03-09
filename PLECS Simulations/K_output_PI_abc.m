@@ -121,7 +121,7 @@ try
         case 3
              K = [K(:,1:5),zeros(6,1),K(:,6:end)]; 
     end
-%     
+    
 catch
 %     K = lqr(Ai+randn,Bi,Q,R); 
     disp('Warning, LQR Failed!') ;

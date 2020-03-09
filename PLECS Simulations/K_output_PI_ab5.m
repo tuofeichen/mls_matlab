@@ -62,16 +62,16 @@ D(isnan(D)) = 0;
 Dnom        = D; 
 Ig          = [Ig1(ii),Ig2(ii),Ig3(ii)]; 
 
-Aiv = [-D(1),-D(3); D(5) D(5)-D(4); -D(2)+D(6) D(6)]/Cin;
-Avi = [D(1) 0 D(2); D(3) D(4) 0;]/Lout;
+Aiv = [D(1)-D(3),D(1); -D(4) -D(5); D(2) D(2)-D(6)]/Cin;
+Avi = [D(1) 0 D(2); 0 D(5) D(6);]/Lout;
 A = [zeros(3,3), Aiv; Avi zeros(2,2)]; 
 
 Bv = [-Ig(1) 0 -Ig(2) 0 0 0; 
      0 0 0 -Ig(2) -Ig(3) 0; 
      0 -Ig(1) 0 0 0 -Ig(3)]/Cin; %this is fine nominally
 
-Bi = [Vpv(1) Vpv(3) 0   0   0  0; 
-       0  0   Vpv(1)   Vpv(2) 0 0;]/Lout;   
+Bi = [0 0 Vpv(1) Vpv(3)  0  0; 
+       0  0  0  0  Vpv(1)   Vpv(2);]/Lout;   
 B = [Bv; Bi];
 
 C = [eye(Nout), zeros(Nout,Nstate-Nout)];
@@ -125,7 +125,7 @@ catch
         xnom_log(ii,:) = [Vpv,Ig(1),Ig(2),Ig(3)];
         continue; 
     end 
-    K = reshape(K_log(ii-1,:,:),5,10); 
+    K = reshape(K_log(ii-1,:,:),6,10); 
 end
 
 
@@ -142,7 +142,7 @@ end
 
 %% xs -> D1
 
-plotConvId = 4; 
+plotConvId = 1; 
 K11 = K_log(:,plotConvId,1);
 K12 = K_log(:,plotConvId,2);
 K13 = K_log(:,plotConvId,3);
@@ -203,6 +203,6 @@ xlabel('Grid Angle (rad)')
 %         save ('Knom12','K_log','xnom_log','phi'); 
 % end
 %         
-        
+save('Knom_bc5','K_log','xnom_log','phi'); 
         
         
