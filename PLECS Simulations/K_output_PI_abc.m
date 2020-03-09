@@ -121,9 +121,10 @@ try
         case 3
              K = [K(:,1:5),zeros(6,1),K(:,6:end)]; 
     end
-    
+%     
 catch
 %     K = lqr(Ai+randn,Bi,Q,R); 
+    disp('Warning, LQR Failed!') ;
     if (ii==1) 
         xnom_log(ii,:) = [Vpv,Ig(1),Ig(2),Ig(3)];
         continue; 
@@ -133,23 +134,11 @@ end
 
 
 if sum(sum(K))~=0
-Cx = eye(size(A));
-C  = Cx; % integral gain on all currents for analysis
-Dx = zeros(size(B)); 
-K = reshape(K_sparse_log(ii,:,:),6,12); 
-
-Golx = ss(A,B,Cx,Dx); 
-Ki = K       (:,1:Nout+1); 
-Kp = K       (:,Nout+2:end); 
-s = tf('s');
-Gclx = C*feedback(Golx,Kp); % *note that this need to rethink about the pole locations! 
-Gcl = feedback(-Gclx*Ki/s,ss(eye(Nout+1)));
-% pole(Gcl)
-if sum(real(pole(Gcl))>-10)
-    disp('Warning, unstable'); 
+    if sum(real(P)>-10)
+        disp('Warning, unstable'); 
+    end
 end
-end
-
+pole_log(ii)  = max(real(P)); 
 K_log(ii,:,:)  = K; 
 xnom_log(ii,:) = [Vpv,Ig(1),Ig(2),Ig(3)];
 end
