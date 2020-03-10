@@ -9,6 +9,11 @@
 % |          |
 % C2---S3----C6
 
+
+Vn = (D1V1+D2V3+D3V1+D4V2+D5V2+D6V3)/3;
+
+
+
 clear
 close all
 load IV_curve.mat
@@ -61,6 +66,7 @@ D           = [D1(ii),D2(ii),D3(ii),D4(ii),D5(ii),D6(ii)];
 D(isnan(D)) = 0; 
 Dnom        = D; 
 Ig          = [Ig1(ii),Ig2(ii),Ig3(ii)]; 
+
 
 Aiv = [D(1)-D(3),D(1); -D(4) -D(5); D(2) D(2)-D(6)]/Cin;
 Avi = [D(1) 0 D(2); 0 D(5) D(6);]/Lout;
